@@ -9,3 +9,4 @@ werkzeug
 openai
 Pillow
 gunicorn
+psycopg2-binary
