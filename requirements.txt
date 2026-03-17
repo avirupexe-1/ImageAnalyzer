@@ -1,0 +1,11 @@
+flask
+flask-sqlalchemy
+flask-login
+flask-migrate
+flask-wtf
+authlib
+python-dotenv
+werkzeug
+openai
+Pillow
+gunicorn

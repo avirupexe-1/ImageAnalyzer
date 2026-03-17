@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VintageLogin — Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body class="dashboard">
+
+  <div class="page-wrap">
+    <div class="dash-card">
+
+      <!-- TOP NAV -->
+      <div class="dash-nav">
+        <span class="dash-logo">#VintageLogin</span>
+        <a href="{{ url_for('auth.logout') }}" class="dash-logout">Logout</a>
+      </div>
+
+      <!-- BODY -->
+      <div class="dash-body">
+
+        <!-- GREETING -->
+        <div class="dash-greeting-row">
+          <div>
+            <h1 class="dash-greeting">Good to see you, {{ user.name.split()[0] }} ✦</h1>
+            <p class="dash-date" id="dash-date"></p>
+          </div>
+        </div>
+
+        <!-- ANIMAL SECTION -->
+        <div class="buddy-section">
+          <p class="buddy-label">Today's companion</p>
+
+          <div class="buddy-stage">
+            <div class="buddy-frame">
+              <img id="buddy-img" src="" alt="buddy" class="buddy-img dancing">
+              <p class="buddy-name" id="buddy-name"></p>
+            </div>
+          </div>
+
+          <div class="buddy-btn-row">
+            <button class="btn-outline" onclick="nextBuddy()">Meet my buddies ʕ•ᴥ•ʔ</button>
+            <button class="btn-dark" onclick="randomBuddy()">Surprise me ✦</button>
+          </div>
+        </div>
+
+        <!-- IMAGE CAPTION SECTION -->
+<div class="caption-section">
+  <p class="buddy-label">Drop an image — let your buddy describe it!</p>
+
+  <div class="caption-layout">
+
+    <!-- DROP ZONE -->
+    <div class="drop-zone" id="drop-zone">
+      <div class="drop-inner" id="drop-inner">
+        <div class="drop-icon">🖼</div>
+        <p class="drop-text">Drop an image here</p>
+        <p class="drop-sub">or click to browse</p>
+        <input type="file" id="img-input" accept="image/*" style="display:none;">
+      </div>
+      <img id="preview-img" class="preview-img" style="display:none;" alt="preview">
+    </div>
+
+    <!-- CHAT BUBBLE -->
+    <div class="chat-area" id="chat-area">
+  <div class="chat-buddy-row">
+    <img id="chat-buddy-img" src="" alt="buddy" class="chat-buddy-img">
+    <div class="chat-bubble" id="chat-bubble">
+      <span id="chat-text">Drop an image and I'll tell you what I see! ✨</span>
+    </div>
+  </div>
+</div>
+
+  </div>
+</div>
+
+        <!-- DIVIDER -->
+        <hr class="dash-divider">
+
+        <!-- STATS -->
+        <div class="dash-stats">
+          <div class="stat-card">
+            <p class="stat-label">Member since</p>
+            <p class="stat-val">{{ user.created_at.strftime('%b %Y') }}</p>
+          </div>
+          <div class="stat-card">
+            <p class="stat-label">Logged in as</p>
+            <p class="stat-val">{{ user.email }}</p>
+          </div>
+          <div class="stat-card">
+            <p class="stat-label">Buddies met</p>
+            <p class="stat-val" id="met-count">1</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
