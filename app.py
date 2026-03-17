@@ -41,3 +41,6 @@ else:
     # This runs when gunicorn starts the app
     with app.app_context():
         db.create_all()
+
+
+print("DB PATH:", app.config['SQLALCHEMY_DATABASE_URI'])
