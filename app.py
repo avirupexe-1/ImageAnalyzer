@@ -1,7 +1,7 @@
-from flask import Flask, redirect, url_for
+from flask import Flask, redirect, url_for, session, jsonify
 from config import Config
 from models import db
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user
 from flask_migrate import Migrate
 
 app = Flask(__name__)
@@ -20,7 +20,7 @@ migrate = Migrate(app, db)
 
 login_manager = LoginManager(app)
 login_manager.login_view = 'auth.login'
-login_manager.session_protection = 'basic'  # THIS is what fixes the redirect loop
+login_manager.session_protection = 'basic'
 
 from models import User
 
@@ -38,6 +38,19 @@ app.register_blueprint(main_blueprint)
 @app.route('/')
 def index():
     return redirect(url_for('auth.login'))
+
+# ── DEBUG ROUTE — visit /debug after login attempt ──
+@app.route('/debug')
+def debug():
+    return jsonify({
+        'session': dict(session),
+        'is_authenticated': current_user.is_authenticated,
+        'secret_key_set': bool(app.config.get('SECRET_KEY')),
+        'secret_key_length': len(app.config.get('SECRET_KEY', '')),
+        'cookie_secure': app.config.get('SESSION_COOKIE_SECURE'),
+        'cookie_samesite': app.config.get('SESSION_COOKIE_SAMESITE'),
+        'session_protection': login_manager.session_protection,
+    })
 
 # Create tables on startup
 with app.app_context():
