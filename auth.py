@@ -61,7 +61,7 @@ def login():
             flash('Wrong password. Try again.', 'error')
             return redirect(url_for('auth.login'))
 
-        login_user(user)
+        login_user(user, remember=True)
         return redirect(url_for('main.dashboard'))
 
     return render_template('login.html')
