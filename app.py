@@ -6,6 +6,9 @@ from flask_migrate import Migrate
 
 app = Flask(__name__)
 app.config.from_object(Config)
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['SESSION_COOKIE_SECURE'] = True
+
 
 # Initialize extensions
 db.init_app(app)
