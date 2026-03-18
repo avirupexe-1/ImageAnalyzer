@@ -17,23 +17,19 @@ def register():
         password = request.form.get('password')
         confirm  = request.form.get('confirm')
 
-        # Check passwords match
         if password != confirm:
             flash('Passwords do not match.', 'error')
             return redirect(url_for('auth.register'))
 
-        # Check password length
         if len(password) < 6:
             flash('Password must be at least 6 characters.', 'error')
             return redirect(url_for('auth.register'))
 
-        # Check if email already exists
         existing_user = User.query.filter_by(email=email).first()
         if existing_user:
             flash('An account with that email already exists.', 'error')
             return redirect(url_for('auth.register'))
 
-        # Hash the password and save user
         hashed_pw = generate_password_hash(password)
         new_user  = User(name=name, email=email, password_hash=hashed_pw)
         db.session.add(new_user)

@@ -10,7 +10,6 @@ client = OpenAI(
     api_key=os.environ.get("NVIDIA_API_KEY")
 )
 
-# Each buddy has their own personality!
 BUDDY_PERSONALITIES = {
   'duck': """You are Pip the Duck, a chaotic little duck who is WAY too excited about everything. 
 You speak like a curious toddler who just discovered the world. Use duck puns naturally, 
@@ -49,8 +48,7 @@ Max 3 sentences. No bullet points, just talk.""",
 }
 
 def describe_image(image_bytes, buddy_name='duck'):
-    # Convert image to base64
-    image_b64 = base64.b64encode(image_bytes).decode('utf-8')
+    image_b64  = base64.b64encode(image_bytes).decode('utf-8')
     personality = BUDDY_PERSONALITIES.get(buddy_name, BUDDY_PERSONALITIES['duck'])
 
     response = client.chat.completions.create(

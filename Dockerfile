@@ -1,18 +1,25 @@
 FROM python:3.10-slim
 
-WORKDIR /app
+# Required by Hugging Face Spaces — must be UID 1000
+RUN useradd -m -u 1000 user
+USER user
 
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+ENV HOME=/home/user \
+    PATH=/home/user/.local/bin:$PATH \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
 
-COPY . .
+WORKDIR /home/user/app
 
-# Create static folders in case they're missing
-RUN mkdir -p /app/static/images/animals
+# Install dependencies first (better layer caching)
+COPY --chown=user requirements.txt .
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copy all app files
+COPY --chown=user . .
 
 EXPOSE 7860
 
-ENV FLASK_APP=app.py
-ENV FLASK_ENV=production
-
-CMD ["gunicorn", "--bind", "0.0.0.0:7860", "--workers", "1", "--timeout", "120", "app:app"]
+# Gunicorn for production — 2 workers, 120s timeout for vision API calls
+CMD ["gunicorn", "--bind", "0.0.0.0:7860", "--workers", "2", "--timeout", "120", "app:app"]

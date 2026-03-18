@@ -1,6 +1,10 @@
 .env
 __pycache__/
 *.pyc
+*.pyo
 instance/
-.venv/
+*.db
+migrations/
+.DS_Store
 venv/
+.venv/

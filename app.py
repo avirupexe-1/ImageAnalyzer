@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, redirect, url_for
 from config import Config
 from models import db
 from flask_login import LoginManager
@@ -27,20 +27,13 @@ from main import main as main_blueprint
 app.register_blueprint(auth_blueprint)
 app.register_blueprint(main_blueprint)
 
-from flask import redirect, url_for
-
 @app.route('/')
 def index():
     return redirect(url_for('auth.login'))
 
+# Create tables on startup (works for both gunicorn and direct run)
+with app.app_context():
+    db.create_all()
+
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-    app.run(debug=True)
-else:
-    # This runs when gunicorn starts the app
-    with app.app_context():
-        db.create_all()
-
-
-print("DB PATH:", app.config['SQLALCHEMY_DATABASE_URI'])
+    app.run(host='0.0.0.0', port=7860, debug=False)
