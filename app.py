@@ -6,9 +6,13 @@ from flask_migrate import Migrate
 
 app = Flask(__name__)
 app.config.from_object(Config)
-app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
-app.config['SESSION_COOKIE_SECURE'] = True
 
+# Critical for HTTPS session cookies on HF Spaces
+app.config['SESSION_COOKIE_SECURE'] = True
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
+app.config['REMEMBER_COOKIE_SECURE'] = True
+app.config['REMEMBER_COOKIE_HTTPONLY'] = True
 
 # Initialize extensions
 db.init_app(app)
@@ -16,6 +20,7 @@ migrate = Migrate(app, db)
 
 login_manager = LoginManager(app)
 login_manager.login_view = 'auth.login'
+login_manager.session_protection = 'basic'  # THIS is what fixes the redirect loop
 
 from models import User
 
@@ -34,7 +39,7 @@ app.register_blueprint(main_blueprint)
 def index():
     return redirect(url_for('auth.login'))
 
-# Create tables on startup (works for both gunicorn and direct run)
+# Create tables on startup
 with app.app_context():
     db.create_all()
 
