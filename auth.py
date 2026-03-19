@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, flash, request
+from flask import Blueprint, render_template, redirect, url_for, flash, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import login_user, logout_user, login_required, current_user
 from models import db, User
@@ -8,9 +8,6 @@ auth = Blueprint('auth', __name__)
 # ── REGISTER ──────────────────────────────────────────
 @auth.route('/register', methods=['GET', 'POST'])
 def register():
-    if current_user.is_authenticated:
-        return redirect(url_for('main.dashboard'))
-
     if request.method == 'POST':
         name     = request.form.get('name').strip()
         email    = request.form.get('email').strip().lower()
@@ -35,8 +32,12 @@ def register():
         db.session.add(new_user)
         db.session.commit()
 
-        flash('Account created! Please log in.', 'success')
-        return redirect(url_for('auth.login'))
+        # Auto login after register
+        login_user(new_user, remember=True)
+        session['user_id'] = new_user.id
+        session.permanent = True
+
+        return redirect(url_for('main.dashboard'))
 
     return render_template('register.html')
 
@@ -44,9 +45,6 @@ def register():
 # ── LOGIN ─────────────────────────────────────────────
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
-    if current_user.is_authenticated:
-        return redirect(url_for('main.dashboard'))
-
     if request.method == 'POST':
         email    = request.form.get('email').strip().lower()
         password = request.form.get('password')
@@ -61,7 +59,11 @@ def login():
             flash('Wrong password. Try again.', 'error')
             return redirect(url_for('auth.login'))
 
+        # Both flask-login AND manual session for reliability on HF Spaces
         login_user(user, remember=True)
+        session['user_id'] = user.id
+        session.permanent = True
+
         return redirect(url_for('main.dashboard'))
 
     return render_template('login.html')
@@ -69,8 +71,8 @@ def login():
 
 # ── LOGOUT ────────────────────────────────────────────
 @auth.route('/logout')
-@login_required
 def logout():
+    session.clear()
     logout_user()
     flash('You have been logged out.', 'success')
     return redirect(url_for('auth.login'))

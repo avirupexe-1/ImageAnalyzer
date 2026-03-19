@@ -1,17 +1,32 @@
-from flask import Blueprint, render_template, request, jsonify
-from flask_login import login_required, current_user
+from flask import Blueprint, render_template, request, jsonify, session, redirect, url_for
+from flask_login import current_user
+from models import User
 from vision import describe_image
 
 main = Blueprint('main', __name__)
 
+def get_current_user():
+    """Check flask-login first, fall back to manual session."""
+    if current_user.is_authenticated:
+        return current_user
+    user_id = session.get('user_id')
+    if user_id:
+        return User.query.get(int(user_id))
+    return None
+
 @main.route('/dashboard')
-@login_required
 def dashboard():
-    return render_template('dashboard.html', user=current_user)
+    user = get_current_user()
+    if not user:
+        return redirect(url_for('auth.login'))
+    return render_template('dashboard.html', user=user)
 
 @main.route('/describe', methods=['POST'])
-@login_required
 def describe():
+    user = get_current_user()
+    if not user:
+        return jsonify({'error': 'Not logged in'}), 401
+
     if 'image' not in request.files:
         return jsonify({'error': 'No image uploaded'}), 400
 
