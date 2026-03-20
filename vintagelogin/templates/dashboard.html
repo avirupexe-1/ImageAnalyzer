@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VintageLogin — Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+<div class="dash-layout">
+
+  <!-- Top bar -->
+  <header class="topbar">
+    <div class="topbar-logo">Vintage<span>Login</span></div>
+    <div class="topbar-user">
+      <span>Logged in as <strong>{{ current_user.name }}</strong></span>
+      <a href="{{ url_for('auth.logout') }}" class="btn-logout">Sign Out</a>
+    </div>
+  </header>
+
+  <!-- Hidden input for current buddy key -->
+  <input type="hidden" id="buddy-key" value="{{ buddy }}" />
+
+  <!-- Main content -->
+  <main class="dash-main">
+
+    <!-- Content (left) -->
+    <section class="content-area">
+      <h2>Hello, {{ current_user.name.split()[0] }}.</h2>
+      <p class="welcome-sub">Your pixel companions await. Drop an image for an AI analysis.</p>
+
+      <!-- Drop zone -->
+      <div class="drop-zone" id="drop-zone">
+        <span class="drop-icon">🖼️</span>
+        <p>Drag & drop an image here, or <span>click to browse</span></p>
+        <input type="file" id="file-input" accept="image/*" />
+      </div>
+
+      <!-- Preview -->
+      <img id="image-preview" alt="Uploaded preview" />
+
+      <!-- Analyse button -->
+      <button class="btn-analyze" id="btn-analyze">✦ Analyse Image</button>
+
+      <!-- Result -->
+      <div class="analysis-result" id="analysis-result">
+        <h4 id="result-buddy">—</h4>
+        <p id="result-text"></p>
+      </div>
+
+      <!-- Info strip -->
+      <div class="info-strip">
+        <div class="info-item">
+          <div class="label">Account</div>
+          <div class="value">{{ current_user.email }}</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Member since</div>
+          <div class="value">{{ current_user.created_at.strftime('%b %Y') }}</div>
+        </div>
+        <div class="info-item">
+          <div class="label">Active buddy</div>
+          <div class="value" id="buddy-display-name">{{ buddy_name }}</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Buddy panel (right) -->
+    <aside class="buddy-panel">
+      <div id="buddy-sprite" class="buddy-sprite" style="font-size:5rem;text-align:center;line-height:1">
+        {% set emoji_map = {
+          'duck':'🦆','cat':'🐱','fox':'🦊',
+          'frog':'🐸','bunny':'🐰','bear':'🐻','penguin':'🐧'
+        } %}
+        {{ emoji_map.get(buddy, '🐱') }}
+      </div>
+
+      <div class="buddy-name" id="buddy-display-name-side">{{ buddy_name }}</div>
+
+      <div class="buddy-speech">
+        <span id="buddy-speech-text"></span><span class="typing-cursor"></span>
+      </div>
+
+      <!-- Buddy selector -->
+      <div class="buddy-selector">
+        {% for key, (name, _) in [
+            ('duck',   ('Pip',   '')),
+            ('cat',    ('Mochi', '')),
+            ('fox',    ('Rusty', '')),
+            ('frog',   ('Lily',  '')),
+            ('bunny',  ('Coco',  '')),
+            ('bear',   ('Bruno', '')),
+            ('penguin',('Percy', ''))
+        ] %}
+        <button
+          class="buddy-btn {% if key == buddy %}active{% endif %}"
+          data-buddy="{{ key }}"
+        >{{ name }}</button>
+        {% endfor %}
+      </div>
+    </aside>
+
+  </main>
+
+  <!-- Dancing pixel animal strip -->
+  <footer class="animals-strip">
+    <div class="animal-item">🦆<span>Pip</span></div>
+    <div class="animal-item">🐱<span>Mochi</span></div>
+    <div class="animal-item">🦊<span>Rusty</span></div>
+    <div class="animal-item">🐸<span>Lily</span></div>
+    <div class="animal-item">🐰<span>Coco</span></div>
+    <div class="animal-item">🐻<span>Bruno</span></div>
+    <div class="animal-item">🐧<span>Percy</span></div>
+  </footer>
+
+</div>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
