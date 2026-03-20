@@ -16,7 +16,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 COPY --chown=user . .
 
-EXPOSE 7860
+EXPOSE 10000
 
 # 1 worker fixes session not persisting across gunicorn workers
-CMD ["gunicorn", "--bind", "0.0.0.0:7860", "--workers", "1", "--timeout", "120", "app:app"]
+CMD ["gunicorn", "--bind", "0.0.0.0:10000", "--workers", "1", "--timeout", "120", "app:app"]
