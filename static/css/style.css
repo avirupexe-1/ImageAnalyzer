@@ -29,7 +29,7 @@ body {
 }
 
 /* ── card wrapper ── */
-.page-wrap { 
+.page-wrap {
   flex: 1;
   display: flex;
   width: 100%;
@@ -218,18 +218,11 @@ body {
 .msg-error   { background: #f5e6e6; color: var(--error); }
 .msg-success { background: #e6f0e8; color: var(--success); }
 
-/* ── responsive ── */
-@media (max-width: 620px) {
-  .card { flex-direction: column; }
-  .card-art { flex: 0 0 220px; }
-  .card-form { padding: 2rem 1.5rem; }
-}
-
 /* ═══════════════════════════════
    DASHBOARD
 ═══════════════════════════════ */
 
-body.dashboard{
+body.dashboard {
   align-items: stretch;
   justify-content: flex-start;
   padding: 0;
@@ -252,6 +245,9 @@ body.dashboard{
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
 
 .dash-logo {
@@ -327,6 +323,8 @@ body.dashboard{
   align-items: center;
   justify-content: center;
   min-width: 260px;
+  width: 100%;
+  max-width: 340px;
 }
 
 .buddy-frame {
@@ -368,13 +366,8 @@ body.dashboard{
   100% { transform: scale(1) rotate(0deg); opacity: 1; }
 }
 
-.dancing {
-  animation: bob 1.2s ease-in-out infinite;
-}
-
-.entrance {
-  animation: entrance 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards;
-}
+.dancing { animation: bob 1.2s ease-in-out infinite; }
+.entrance { animation: entrance 0.4s cubic-bezier(0.34,1.56,0.64,1) forwards; }
 
 /* buddy buttons */
 .buddy-btn-row {
@@ -382,6 +375,7 @@ body.dashboard{
   gap: 10px;
   flex-wrap: wrap;
   justify-content: center;
+  width: 100%;
 }
 
 .btn-outline {
@@ -395,6 +389,9 @@ body.dashboard{
   color: var(--text-muted);
   cursor: pointer;
   transition: background 0.2s, color 0.2s;
+  flex: 1;
+  min-width: 140px;
+  text-align: center;
 }
 
 .btn-outline:hover { background: #f5f1eb; color: var(--text); }
@@ -410,6 +407,9 @@ body.dashboard{
   color: #f0ece4;
   cursor: pointer;
   transition: background 0.2s;
+  flex: 1;
+  min-width: 140px;
+  text-align: center;
 }
 
 .btn-dark:hover { background: #2a2520; }
@@ -426,6 +426,7 @@ body.dashboard{
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
+  margin-bottom: 2rem;
 }
 
 .stat-card {
@@ -460,14 +461,14 @@ body.dashboard{
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
 }
 
 .caption-layout {
   display: flex;
   gap: 1.5rem;
-  align-items: flex-start;
+  align-items: center;
   width: 100%;
-  max-width: 700px;
   justify-content: center;
 }
 
@@ -525,22 +526,14 @@ body.dashboard{
   top: 0; left: 0;
 }
 
-/* chat bubble */
-.caption-layout {
-  display: flex;
-  gap: 1.5rem;
-  align-items: center;
-  width: 100%;
-  max-width: 800px;
-  justify-content: center;
-}
-
+/* chat area */
 .chat-area {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 12px;
+  min-width: 0;
 }
 
 .chat-buddy-row {
@@ -551,8 +544,8 @@ body.dashboard{
 }
 
 .chat-buddy-img {
-  width: 90px;
-  height: 90px;
+  width: 80px;
+  height: 80px;
   object-fit: contain;
   image-rendering: pixelated;
   animation: bob 1.2s ease-in-out infinite;
@@ -571,6 +564,8 @@ body.dashboard{
   color: var(--text);
   min-height: 100px;
   position: relative;
+  min-width: 0;
+  word-break: break-word;
 }
 
 .chat-bubble::after {
@@ -594,22 +589,196 @@ body.dashboard{
   z-index: 1;
 }
 
+/* typing dots */
 @keyframes blink {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0; }
 }
 
-.chat-avatar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+.typing-dot {
+  display: inline-block;
+  animation: blink 1s step-end infinite;
+  font-size: 20px;
+  line-height: 1;
+  color: var(--text-muted);
 }
 
-.chat-buddy-img {
-  width: 80px;
-  height: 80px;
-  object-fit: contain;
-  image-rendering: pixelated;
-  animation: bob 1.2s ease-in-out infinite;
-  flex-shrink: 0;
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+/* ═══════════════════════════════
+   RESPONSIVE — TABLET
+═══════════════════════════════ */
+
+@media (max-width: 768px) {
+  .dash-body {
+    padding: 1.5rem 1.5rem 2rem;
+  }
+
+  .dash-greeting {
+    font-size: 28px;
+  }
+
+  .caption-layout {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .drop-zone {
+    flex: none;
+    width: 100%;
+    height: 220px;
+  }
+
+  .chat-area {
+    width: 100%;
+  }
+
+  .dash-stats {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .stat-val {
+    font-size: 15px;
+  }
+
+  .buddy-stage {
+    padding: 1.5rem 2rem;
+  }
+}
+
+/* ═══════════════════════════════
+   RESPONSIVE — MOBILE
+═══════════════════════════════ */
+
+@media (max-width: 620px) {
+  /* Login/Register card — stack vertically, hide illustration */
+  body {
+    padding: 1rem 0.75rem;
+  }
+
+  .card {
+    flex-direction: column;
+    min-height: unset;
+    border-radius: 16px;
+  }
+
+  .card-art {
+    flex: 0 0 180px;
+    border-radius: 16px 16px 0 0;
+  }
+
+  .card-form {
+    padding: 1.75rem 1.5rem 1.5rem;
+  }
+
+  .form-title {
+    font-size: 26px;
+  }
+
+  /* Dashboard nav */
+  .dash-nav {
+    padding: 0.9rem 1.2rem;
+  }
+
+  .dash-logo {
+    font-size: 15px;
+  }
+
+  .dash-logout {
+    font-size: 10px;
+    padding: 4px 10px;
+  }
+
+  /* Dashboard body */
+  .dash-body {
+    padding: 1.2rem 1rem 2rem;
+  }
+
+  .dash-greeting {
+    font-size: 24px;
+  }
+
+  .dash-date {
+    font-size: 9px;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Buddy stage */
+  .buddy-stage {
+    padding: 1.2rem 1.5rem;
+    min-width: unset;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .buddy-img {
+    width: 90px;
+    height: 90px;
+  }
+
+  /* Buttons full width on mobile */
+  .buddy-btn-row {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .btn-outline, .btn-dark {
+    width: 100%;
+    padding: 11px 16px;
+    font-size: 11px;
+  }
+
+  /* Image drop zone */
+  .drop-zone {
+    height: 200px;
+  }
+
+  .drop-icon { font-size: 28px; }
+  .drop-text { font-size: 12px; }
+
+  /* Chat bubble */
+  .chat-buddy-img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .chat-bubble {
+    font-size: 14px;
+    padding: 1rem 1.1rem;
+    min-height: 80px;
+  }
+
+  /* Stats — stack on mobile */
+  .dash-stats {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .stat-card {
+    padding: 0.8rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .stat-label { margin: 0; }
+
+  .stat-val {
+    font-size: 18px;
+    text-align: right;
+  }
+}
+
+/* ═══════════════════════════════
+   RESPONSIVE — SMALL PHONES
+═══════════════════════════════ */
+
+@media (max-width: 380px) {
+  .dash-greeting { font-size: 20px; }
+  .form-title { font-size: 22px; }
+  .buddy-img { width: 75px; height: 75px; }
+  .chat-buddy-img { width: 50px; height: 50px; }
+  .drop-zone { height: 170px; }
 }
