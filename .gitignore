@@ -2,9 +2,10 @@
 __pycache__/
 *.pyc
 *.pyo
-instance/
 *.db
-migrations/
 .DS_Store
 venv/
 .venv/
+instance/
+migrations/
+.gitattributes
